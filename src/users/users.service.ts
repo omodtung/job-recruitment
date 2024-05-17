@@ -4,6 +4,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
+import { CreateUserDto } from './dto/create-user.dto';
 
 
 @Injectable()
@@ -50,6 +51,23 @@ export class UsersService implements OnModuleInit {
     }
   }
 
+  getHashPassword = (password: string) => {
+    const salt = genSaltSync(10);
+    const hash = hashSync(password, salt);
+    return hash;
+  }
+
+  async create(createDTO : CreateUserDto)
+  {
+    const hashPassword = this.getHashPassword(hoidanit.password);
+
+    let user = await this.userModel.create({
+      email: hoidanit.email,
+      password: hashPassword,
+      name: hoidanit.name
+    })
+    return user;
+  }
 
   async findAll() {
     return await this.userModel.find({});

@@ -23,9 +23,8 @@ export class AppController {
   async getLoginPage(@Req() req: Request, @Res() res: Response) {
     const isAuthenticated = req.isAuthenticated();
     if (isAuthenticated) {
-      return res.redirect("/");
-    }
-    else return res.render('login')
+      return res.redirect('/');
+    } else return res.render('login');
   }
 
   @UseGuards(AuthenticatedGuard)
