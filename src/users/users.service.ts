@@ -6,48 +6,49 @@ import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
 
-
 @Injectable()
 export class UsersService implements OnModuleInit {
-
   constructor(
     @InjectModel(User.name)
     private userModel: Model<User>,
-    private configService: ConfigService
-  ) { }
+    private configService: ConfigService,
+  ) {}
 
   async onModuleInit() {
     const count = await this.userModel.count();
     if (count === 0) {
       const salt = genSaltSync(10);
-      const hash = hashSync(this.configService.get<string>("INIT_USER_PASSWORD"), salt);
+      const hash = hashSync(
+        this.configService.get<string>('INIT_USER_PASSWORD'),
+        salt,
+      );
       await this.userModel.insertMany([
         {
-          name: "Eric",
-          email: "admin@gmail.com",
-          password: hash
+          name: 'Eric',
+          email: 'admin@gmail.com',
+          password: hash,
         },
         {
-          name: "User",
-          email: "user@gmail.com",
-          password: hash
+          name: 'User',
+          email: 'user@gmail.com',
+          password: hash,
         },
         {
-          name: "User 1",
-          email: "user1@gmail.com",
-          password: hash
+          name: 'User 1',
+          email: 'user1@gmail.com',
+          password: hash,
         },
         {
-          name: "User 2",
-          email: "user2@gmail.com",
-          password: hash
+          name: 'User 2',
+          email: 'user2@gmail.com',
+          password: hash,
         },
         {
-          name: "User 3",
-          email: "user3@gmail.com",
-          password: hash
-        }
-      ])
+          name: 'User 3',
+          email: 'user3@gmail.com',
+          password: hash,
+        },
+      ]);
     }
   }
 
@@ -55,17 +56,16 @@ export class UsersService implements OnModuleInit {
     const salt = genSaltSync(10);
     const hash = hashSync(password, salt);
     return hash;
-  }
+  };
 
-  async create(createDTO : CreateUserDto)
-  {
-    const hashPassword = this.getHashPassword(hoidanit.password);
+  async create(createDTO: CreateUserDto) {
+    const hashPassword = this.getHashPassword(createDTO.password);
 
-    let user = await this.userModel.create({
-      email: hoidanit.email,
+    const user = await this.userModel.create({
+      email: createDTO.email,
       password: hashPassword,
-      name: hoidanit.name
-    })
+      name: createDTO.name,
+    });
     return user;
   }
 
@@ -80,6 +80,4 @@ export class UsersService implements OnModuleInit {
   checkPassword(hash: string, plain: string) {
     return compareSync(hash, plain);
   }
-
-
 }

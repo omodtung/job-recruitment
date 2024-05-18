@@ -12,7 +12,8 @@ import ms from 'ms';
 @Module({
   controllers: [StatelessController],
   providers: [StatelessService, LocalStrategy, JwtStrategy],
-  imports: [UsersModule,
+  imports: [
+    UsersModule,
     PassportModule,
     // JwtModule.({
     //   secret: jwtConstants.secret,
@@ -22,12 +23,11 @@ import ms from 'ms';
       useFactory: async (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: ms(configService.get<string>("JWT_EXPIRED_IN")),
+          expiresIn: ms(configService.get<string>('JWT_EXPIRED_IN')),
         },
       }),
       inject: [ConfigService],
     }),
-
-  ]
+  ],
 })
-export class StatelessModule { }
+export class StatelessModule {}
