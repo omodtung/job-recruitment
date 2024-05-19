@@ -1,10 +1,11 @@
 import { Injectable, OnModuleInit } from '@nestjs/common';
-import { Model } from 'mongoose';
+import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User } from './schemas/user.schema';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
 import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService implements OnModuleInit {
@@ -80,4 +81,26 @@ export class UsersService implements OnModuleInit {
   checkPassword(hash: string, plain: string) {
     return compareSync(hash, plain);
   }
+
+  findOne(id: string) {
+    if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
+
+    return this.userModel.findOne({
+      _id: id,
+    });
+  }
+
+  async update(updateUserDto: UpdateUserDto) {
+    return await this.userModel.updateOne(
+      { _id: updateUserDto._id },
+      { ...updateUserDto },
+    );
+  }
+
+  remove(id: string) {
+    return this.userModel.deleteOne({
+      _id: id,
+    });
+  }
+
 }

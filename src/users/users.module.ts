@@ -10,8 +10,8 @@ import { ConfigModule } from '@nestjs/config';
   providers: [UsersService],
   imports: [
     MongooseModule.forFeature([{ name: User.name, schema: UserSchema }]),
-    ConfigModule
+    ConfigModule,
   ],
-  exports: [UsersService]
+  exports: [UsersService],
 })
-export class UsersModule { }
+export class UsersModule {}
