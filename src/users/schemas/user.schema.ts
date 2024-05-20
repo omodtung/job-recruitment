@@ -13,6 +13,12 @@ export class User {
 
   @Prop()
   password: string;
+
+  @Prop()
+  isDeleted: boolean;
+
+  @Prop()
+  deletedAt: Date;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
