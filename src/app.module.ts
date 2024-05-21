@@ -9,6 +9,7 @@ import { StatelessModule } from './stateless/stateless.module';
 import { softDeletePlugin } from 'soft-delete-plugin-mongoose';
 import { CompaniesModule } from './companies/companies.module';
 
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
