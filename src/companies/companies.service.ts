@@ -5,6 +5,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Company, CompanyDocument } from './schemas/company.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { ConfigService } from '@nestjs/config';
+import { genSaltSync, hashSync } from 'bcryptjs';
 
 @Injectable()
 export class CompaniesService implements OnModuleInit {
@@ -14,10 +15,16 @@ export class CompaniesService implements OnModuleInit {
     private configService: ConfigService,
   ) {}
   async onModuleInit() {
-    throw new Error('Method not implemented.');
+    return 'hello';
   }
-  create(createCompanyDto: CreateCompanyDto) {
-    return 'This action adds a new company';
+
+  async create(createCompanyDto: CreateCompanyDto) {
+    const company = await this.companyModel.create({
+      name: createCompanyDto.name,
+      address: createCompanyDto.address,
+      description: createCompanyDto.description,
+    });
+    return company;
   }
 
   findAll() {
