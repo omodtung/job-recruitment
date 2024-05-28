@@ -1,51 +1,62 @@
-import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
-import { NestExpressApplication } from '@nestjs/platform-express';
-import { join } from 'path';
-import cookieParser from 'cookie-parser';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import ms from 'ms';
-import passport from 'passport';
+import { NestFactory, Reflector } from "@nestjs/core";
+import { AppModule } from "./app.module";
+import { ConfigService } from "@nestjs/config";
+import { NestExpressApplication } from "@nestjs/platform-express";
+import { join } from "path";
+import cookieParser from "cookie-parser";
+import session from "express-session";
+import MongoStore from "connect-mongo";
+import ms from "ms";
+import passport from "passport";
+import { JwtAuthGuard } from "@/stateless/passport/stateless.jwt.auth.guard";
+// import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
+// import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const configService = app.get(ConfigService);
-  const port = configService.get<string>('PORT');
+  const port = configService.get<string>("PORT");
 
-  //config view engine
-  app.useStaticAssets(join(__dirname, '..', 'src/public'));
-  app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
-  app.setViewEngine('ejs');
+  // const reflector = app.get(Reflector);
+  //
+  // app.useGlobalGuards(new JwtAuthGuard(reflector));
+  // //config view engine
+
+  app.useStaticAssets(join(__dirname, "..", "src/public"));
+  app.setBaseViewsDir(join(__dirname, "..", "src/views"));
+  app.setViewEngine("ejs");
 
   //config cookies
   app.use(cookieParser());
 
+
   //config session
   app.use(
     session({
-      secret: configService.get<string>('EXPRESS_SESSION_SECRET'),
+      secret: configService.get<string>("EXPRESS_SESSION_SECRET"),
       resave: true,
       saveUninitialized: false,
       cookie: {
-        maxAge: ms(configService.get<string>('EXPRESS_SESSION_COOKIE')),
+        maxAge: ms(configService.get<string>("EXPRESS_SESSION_COOKIE"))
       },
       store: MongoStore.create({
-        mongoUrl: configService.get<string>('MONGODB_URI'),
-      }),
-    }),
+        mongoUrl: configService.get<string>("MONGODB_URI")
+      })
+    })
   );
 
   //config passport
   app.use(passport.initialize());
   app.use(passport.session());
+
+
   //setup to avoid cors
   app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    origin: "*",
+    methods: "GET,HEAD,PUT,PATCH,POST,DELETE"
   });
   await app.listen(port);
 }
+
 bootstrap();
