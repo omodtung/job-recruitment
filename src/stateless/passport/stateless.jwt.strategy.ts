@@ -1,17 +1,22 @@
-import { ExtractJwt, Strategy } from "passport-jwt";
-import { PassportStrategy } from "@nestjs/passport";
-import { Injectable } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
-import { IUser } from "@/users/users.interface";
+import { ExtractJwt, Strategy } from 'passport-jwt';
+import { PassportStrategy } from '@nestjs/passport';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
+import { IUser } from '@/users/users.interface';
+import { StatelessService } from '../stateless.service';
+import { Console } from 'console';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
   //https://stackoverflow.com/a/50983040
-  constructor(protected configService: ConfigService) {
+  constructor(
+    protected configService: ConfigService,
+    private authService: StatelessService,
+  ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
       ignoreExpiration: false,
-      secretOrKey: configService.get<string>("JWT_SECRET")
+      secretOrKey: configService.get<string>('JWT_SECRET'),
     });
   }
 
@@ -21,12 +26,13 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   //   update decode Token Giai ma token
   async validate(payload: IUser) {
-    const { _id, name, email, role } = payload;
-    return {
-      _id,
-      name,
-      email,
-      role,
-    };
+    const { _id } = payload;
+
+    const user = await this.authService.findUser(_id);
+
+    if (!user) {
+      throw new UnauthorizedException('Invalid TOken!');
+    }
+    return user;
   }
 }
