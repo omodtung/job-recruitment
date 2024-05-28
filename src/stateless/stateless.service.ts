@@ -1,13 +1,15 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
-import { JwtService } from '@nestjs/jwt';
+import { Injectable, UnauthorizedException } from "@nestjs/common";
+import { UsersService } from "../users/users.service";
+import { JwtService } from "@nestjs/jwt";
+import { IUser } from "@/users/users.interface";
 
 @Injectable()
 export class StatelessService {
   constructor(
     private usersService: UsersService,
-    private jwtService: JwtService,
-  ) {}
+    private jwtService: JwtService
+  ) {
+  }
 
   async validateUserStateless(username: string, pass: string): Promise<any> {
     const user = await this.usersService.findByEmail(username);
@@ -24,10 +26,27 @@ export class StatelessService {
     return user;
   }
 
-  async login(user: any) {
-    const payload = { username: user.email, sub: user._id, name: user.name };
+  async login(user: IUser) {
+    // const payload = { username: user.email, sub: user._id, name: user.name };
+
+    const { _id, name, email, role } = user;
+    const payload = {
+      sub: "token login",
+      iss: "from server",
+      _id,
+      name,
+      email,
+      role
+    };
     return {
       access_token: this.jwtService.sign(payload),
+      _id,
+      name,
+      email,
+      role
     };
+    // return {
+    //   access_token: this.jwtService.sign(payload)
+    // };
   }
 }

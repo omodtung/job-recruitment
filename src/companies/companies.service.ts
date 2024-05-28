@@ -18,15 +18,19 @@ export class CompaniesService implements OnModuleInit {
     return 'hello';
   }
 
-  async create(createCompanyDto: CreateCompanyDto) {
-    const company = await this.companyModel.create({
-      name: createCompanyDto.name,
-      address: createCompanyDto.address,
-      description: createCompanyDto.description,
-    });
-    return company;
-  }
+  // async create(createCompanyDto: CreateCompanyDto) {
+  //   const company = await this.companyModel.create({
+  //     name: createCompanyDto.name,
+  //     address: createCompanyDto.address,
+  //     description: createCompanyDto.description,
+  //   });
+  //   return company;
+  // }
 
+  // method 2
+  create(createCompanyDto: CreateCompanyDto) {
+    return this.companyModel.create({ ...createCompanyDto });
+  }
   findAll() {
     return `This action returns all companies`;
   }
@@ -35,8 +39,11 @@ export class CompaniesService implements OnModuleInit {
     return `This action returns a #${id} company`;
   }
 
-  update(id: number, updateCompanyDto: UpdateCompanyDto) {
-    return `This action updates a #${id} company`;
+  async update(updateCompanyDto: UpdateCompanyDto) {
+    return await this.companyModel.updateOne(
+      { _id: updateCompanyDto._id },
+      { ...updateCompanyDto },
+    );
   }
 
   remove(id: number) {

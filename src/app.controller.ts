@@ -20,22 +20,21 @@ export class AppController {
   constructor(
     private readonly appService: AppService,
     private readonly usersService: UsersService,
-
   ) {}
 
-  @Get()
-  getHomePage(@Req() req: Request, @Res() res: Response) {
-    const isAuthenticated = req.isAuthenticated();
-    return res.render('home', { isAuthenticated });
-  }
+  // @Get()
+  // getHomePage(@Req() req: Request, @Res() res: Response) {
+  //   const isAuthenticated = req.isAuthenticated();
+  //   return res.render('home', { isAuthenticated });
+  // }
 
-  @Get('/login')
-  async getLoginPage(@Req() req: Request, @Res() res: Response) {
-    const isAuthenticated = req.isAuthenticated();
-    if (isAuthenticated) {
-      return res.redirect('/');
-    } else return res.render('login');
-  }
+  // @Get('/login')
+  // async getLoginPage(@Req() req: Request, @Res() res: Response) {
+  //   const isAuthenticated = req.isAuthenticated();
+  //   if (isAuthenticated) {
+  //     return res.redirect('/');
+  //   } else return res.render('login');
+  // }
 
   // @UseGuards(AuthenticatedGuard)
   // @Render('user')
@@ -54,12 +53,12 @@ export class AppController {
   //   return res.redirect('/');
   // }
 
-  @Post('logout')
-  logout(@Req() req: Request, @Res() res: Response) {
-    /* destroys user session */
-    req.session.destroy(function (err) {
-      if (err) console.log(err);
-      return res.redirect('/');
-    });
-  }
+  // @Post('logout')
+  // logout(@Req() req: Request, @Res() res: Response) {
+  //   /* destroys user session */
+  //   req.session.destroy(function (err) {
+  //     if (err) console.log(err);
+  //     return res.redirect('/');
+  //   });
+  // }
 }
