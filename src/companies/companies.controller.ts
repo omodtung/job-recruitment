@@ -23,10 +23,7 @@ export class CompaniesController {
   @Post()
   @UseGuards(JwtAuthGuard)
   create(@Body() createCompanyDto: CreateCompanyDto, @User() user: IUser) {
-    // return user;
-    console.log('info  ' + user);
-    return user;
-    return this.companiesService.create(createCompanyDto);
+    return this.companiesService.create(createCompanyDto, user);
   }
 
   @Get()

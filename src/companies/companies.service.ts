@@ -6,6 +6,7 @@ import { Company, CompanyDocument } from './schemas/company.schema';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { ConfigService } from '@nestjs/config';
 import { genSaltSync, hashSync } from 'bcryptjs';
+import { IUser } from '@/users/users.interface';
 
 @Injectable()
 export class CompaniesService implements OnModuleInit {
@@ -28,8 +29,14 @@ export class CompaniesService implements OnModuleInit {
   // }
 
   // method 2
-  create(createCompanyDto: CreateCompanyDto) {
-    return this.companyModel.create({ ...createCompanyDto });
+  create(createCompanyDto: CreateCompanyDto, user: IUser) {
+    return this.companyModel.create({
+      ...createCompanyDto,
+      createdBy: {
+        _id: user._id,
+        email: user.email,
+      },
+    });
   }
   findAll() {
     return `This action returns all companies`;
