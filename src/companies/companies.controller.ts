@@ -37,6 +37,7 @@ export class CompaniesController {
   }
 
   @Patch(':id')
+  @UseGuards(JwtAuthGuard)
   update(@Body() updateCompanyDto: UpdateCompanyDto) {
     return this.companiesService.update(updateCompanyDto);
   }
