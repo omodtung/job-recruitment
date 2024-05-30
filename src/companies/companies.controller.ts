@@ -43,11 +43,14 @@ export class CompaniesController {
     @Body() updateCompanyDto: UpdateCompanyDto,
     @User() user: IUser,
   ) {
+    console.log(user);
+
     return this.companiesService.update(id, updateCompanyDto, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.companiesService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.companiesService.remove(id, user);
   }
 }

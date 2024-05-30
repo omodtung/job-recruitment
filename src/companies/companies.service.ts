@@ -7,6 +7,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { ConfigService } from '@nestjs/config';
 import { genSaltSync, hashSync } from 'bcryptjs';
 import { IUser } from '@/users/users.interface';
+import { use } from 'passport';
 
 @Injectable()
 export class CompaniesService implements OnModuleInit {
@@ -30,6 +31,7 @@ export class CompaniesService implements OnModuleInit {
 
   // method 2
   create(createCompanyDto: CreateCompanyDto, user: IUser) {
+    console.log(user);
     return this.companyModel.create({
       ...createCompanyDto,
       createdBy: {
@@ -49,13 +51,6 @@ export class CompaniesService implements OnModuleInit {
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
     return await this.companyModel.updateOne(
       { _id: id },
-      // { _id: updateCompanyDto._id },
-      // { ...updateCompanyDto },
-      // updatedBy:
-      // {
-      //   _id : user._id ,
-      //   email: user.email,
-      // },
 
       {
         $set: {
@@ -69,7 +64,16 @@ export class CompaniesService implements OnModuleInit {
     );
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} company`;
+  async remove(id: string, user: IUser) {
+    await this.companyModel.updateOne(
+      { _id: id },
+      {
+        deleteBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+    return this.companyModel.softDelete({ _id: id });
   }
 }
