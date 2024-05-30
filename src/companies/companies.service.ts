@@ -46,9 +46,9 @@ export class CompaniesService implements OnModuleInit {
     return `This action returns a #${id} company`;
   }
 
-  async update(updateCompanyDto: UpdateCompanyDto, user: IUser) {
+  async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
     return await this.companyModel.updateOne(
-      { _id: updateCompanyDto._id },
+      { _id: id },
       // { _id: updateCompanyDto._id },
       // { ...updateCompanyDto },
       // updatedBy:

@@ -38,8 +38,12 @@ export class CompaniesController {
 
   @Patch(':id')
   @UseGuards(JwtAuthGuard)
-  update(@Body() updateCompanyDto: UpdateCompanyDto, @User() user: IUser) {
-    return this.companiesService.update(updateCompanyDto, user);
+  update(
+    @Param('id') id: string,
+    @Body() updateCompanyDto: UpdateCompanyDto,
+    @User() user: IUser,
+  ) {
+    return this.companiesService.update(id, updateCompanyDto, user);
   }
 
   @Delete(':id')
