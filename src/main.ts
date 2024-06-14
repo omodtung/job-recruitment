@@ -9,6 +9,7 @@ import MongoStore from 'connect-mongo';
 import ms from 'ms';
 import passport from 'passport';
 import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
+import { TransformInterceptor } from './core/transform.interceptor';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 
@@ -21,8 +22,9 @@ async function bootstrap() {
   const reflector = app.get(Reflector);
 
   // app.useGlobalGuards(new JwtAuthGuard(reflector));
-  
 
+  //using interceptor
+  app.useGlobalInterceptors(new TransformInterceptor(reflector));
   //config view engine
 
   app.useStaticAssets(join(__dirname, '..', 'src/public'));

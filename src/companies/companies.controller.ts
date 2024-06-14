@@ -15,7 +15,7 @@ import { UpdateCompanyDto } from "./dto/update-company.dto";
 import { User } from "@/decorator/customize";
 import { IUser } from "@/users/users.interface";
 import { JwtAuthGuard } from "@/stateless/passport/stateless.jwt.auth.guard";
-
+import { ResponseMessage } from "@/decorator/customize";
 // import { IUser } from 'src/decorator/customize/u
 
 @Controller("companies")
@@ -30,6 +30,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @ResponseMessage("Fetch List Company with Paginate")
   findAll(
     @Query('page') currentPage: string,
     @Query('limit') limit: string,
