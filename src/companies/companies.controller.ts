@@ -8,29 +8,30 @@ import {
   Delete,
   UseGuards,
   Query,
-} from "@nestjs/common";
-import { CompaniesService } from "./companies.service";
-import { CreateCompanyDto } from "./dto/create-company.dto";
-import { UpdateCompanyDto } from "./dto/update-company.dto";
-import { User } from "@/decorator/customize";
-import { IUser } from "@/users/users.interface";
-import { JwtAuthGuard } from "@/stateless/passport/stateless.jwt.auth.guard";
-import { ResponseMessage } from "@/decorator/customize";
+  Version,
+} from '@nestjs/common';
+import { CompaniesService } from './companies.service';
+import { CreateCompanyDto } from './dto/create-company.dto';
+import { UpdateCompanyDto } from './dto/update-company.dto';
+import { User } from '@/decorator/customize';
+import { IUser } from '@/users/users.interface';
+import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
+import { ResponseMessage } from '@/decorator/customize';
 // import { IUser } from 'src/decorator/customize/u
 
-@Controller("companies")
+@Controller('companies')
 export class CompaniesController {
-  constructor(private readonly companiesService: CompaniesService) {
-  }
+  constructor(private readonly companiesService: CompaniesService) {}
 
   @Post()
+  // @Version('1')
   @UseGuards(JwtAuthGuard)
   create(@Body() createCompanyDto: CreateCompanyDto, @User() user: IUser) {
     return this.companiesService.create(createCompanyDto, user);
   }
 
   @Get()
-  @ResponseMessage("Fetch List Company with Paginate")
+  @ResponseMessage('Fetch List Company with Paginate')
   findAll(
     @Query('page') currentPage: string,
     @Query('limit') limit: string,
@@ -40,25 +41,25 @@ export class CompaniesController {
   }
 
   @Get(':id')
-  findOne(@Param("id") id: string) {
+  findOne(@Param('id') id: string) {
     return this.companiesService.findOne(+id);
   }
 
-  @Patch(":id")
+  @Patch(':id')
   @UseGuards(JwtAuthGuard)
   update(
-    @Param("id") id: string,
+    @Param('id') id: string,
     @Body() updateCompanyDto: UpdateCompanyDto,
-    @User() user: IUser
+    @User() user: IUser,
   ) {
     console.log(user);
 
     return this.companiesService.update(id, updateCompanyDto, user);
   }
 
-  @Delete(":id")
+  @Delete(':id')
   @UseGuards(JwtAuthGuard)
-  remove(@Param("id") id: string, @User() user: IUser) {
+  remove(@Param('id') id: string, @User() user: IUser) {
     return this.companiesService.remove(id, user);
   }
 }

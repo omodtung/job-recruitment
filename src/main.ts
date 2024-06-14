@@ -10,6 +10,7 @@ import ms from 'ms';
 import passport from 'passport';
 import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
+import { VersioningType } from '@nestjs/common';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 
@@ -26,6 +27,13 @@ async function bootstrap() {
   //using interceptor
   app.useGlobalInterceptors(new TransformInterceptor(reflector));
   //config view engine
+
+  // quan ly cac version
+  app.setGlobalPrefix('api');
+  app.enableVersioning({
+    type: VersioningType.URI,
+    defaultVersion: ['1', '2'],
+  });
 
   app.useStaticAssets(join(__dirname, '..', 'src/public'));
   app.setBaseViewsDir(join(__dirname, '..', 'src/views'));
