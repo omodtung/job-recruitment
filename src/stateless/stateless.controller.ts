@@ -1,7 +1,16 @@
-import { Controller, Get, Post, Request, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
 import { LocalAuthGuard } from './passport/stateless.local.guard';
 import { StatelessService } from './stateless.service';
 import { JwtAuthGuard } from './passport/stateless.jwt.auth.guard';
+import { ResponseMessage } from '@/decorator/customize';
+import { RegisterUserDto } from '@/users/dto/create-user.dto';
 
 @Controller('stateless')
 export class StatelessController {
@@ -17,5 +26,11 @@ export class StatelessController {
   getProfile(@Request() req) {
     delete req.user.password;
     return req.user;
+  }
+
+  @ResponseMessage('Register a new user')
+  @Post('/register')
+  handleRegister(@Body() registerUserDto: RegisterUserDto) {
+    return this.statelessService.register(registerUserDto);
   }
 }

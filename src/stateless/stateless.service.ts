@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from '@/users/users.interface';
+import { RegisterUserDto } from '@/users/dto/create-user.dto';
 
 @Injectable()
 export class StatelessService {
@@ -53,5 +54,15 @@ export class StatelessService {
     // return {
     //   access_token: this.jwtService.sign(payload)
     // };
+  }
+
+  async register(user: RegisterUserDto) {
+    let newUser = await this.usersService.register(user);
+    return {
+      // neu newUser = null thi khi tra ve se gap loi
+      // ?. de tranh bi loi khi no null
+      _id: newUser?._id,
+      createdAt: newUser?.createdAt,
+    };
   }
 }

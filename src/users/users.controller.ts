@@ -15,10 +15,10 @@ import { UpdateUserDto } from './dto/update-user.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
-  create(@Body() createDTO: CreateUserDto) {
-    return this.usersService.create(createDTO);
-  }
+  // @Post()
+  // create(@Body() createDTO: CreateUserDto) {
+  //   return this.usersService.create(createDTO);
+  // }
 
   @Get()
   findAll() {

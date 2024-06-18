@@ -1,10 +1,10 @@
-import { Injectable, OnModuleInit } from '@nestjs/common';
+import { BadRequestException, Injectable, OnModuleInit } from '@nestjs/common';
 import mongoose, { Model } from 'mongoose';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './schemas/user.schema';
 import { genSaltSync, hashSync, compareSync } from 'bcryptjs';
 import { ConfigService } from '@nestjs/config';
-import { CreateUserDto } from './dto/create-user.dto';
+import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 
@@ -60,16 +60,16 @@ export class UsersService implements OnModuleInit {
     return hash;
   };
 
-  async create(createDTO: CreateUserDto) {
-    const hashPassword = this.getHashPassword(createDTO.password);
+  // async create(createDTO: CreateUserDto) {
+  //   const hashPassword = this.getHashPassword(createDTO.password);
 
-    const user = await this.userModel.create({
-      email: createDTO.email,
-      password: hashPassword,
-      name: createDTO.name,
-    });
-    return user;
-  }
+  //   const user = await this.userModel.create({
+  //     email: createDTO.email,
+  //     password: hashPassword,
+  //     name: createDTO.name,
+  //   });
+  //   return user;
+  // }
 
   async findAll() {
     return await this.userModel.find({});
@@ -102,5 +102,25 @@ export class UsersService implements OnModuleInit {
     return this.userModel.softDelete({
       _id: id,
     });
+  }
+
+  async register(user: RegisterUserDto) {
+    const { name, email, password, age, gender, address } = user;
+    // const checkExist = await this.userModel.findOne({ email });
+    // if(checkExist)
+    // {
+    //   throw new BadRequestException(`the email ${email} is exist`)
+    // }
+    const hashPassword = this.getHashPassword(password);
+    let newRegister = await this.userModel.create({
+      name,
+      email : 'telecom21@gmail.com',
+      password: hashPassword,
+      age,
+      gender,
+      address,
+      role: 'USER',
+    });
+    return newRegister;
   }
 }
