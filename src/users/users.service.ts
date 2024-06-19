@@ -7,7 +7,9 @@ import { ConfigService } from '@nestjs/config';
 import { CreateUserDto, RegisterUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
-
+import { IUser } from './users.interface';
+import { User as UserC } from '@/decorator/customize';
+import { use } from 'passport';
 @Injectable()
 export class UsersService implements OnModuleInit {
   constructor(
@@ -60,16 +62,28 @@ export class UsersService implements OnModuleInit {
     return hash;
   };
 
-  // async create(createDTO: CreateUserDto) {
-  //   const hashPassword = this.getHashPassword(createDTO.password);
+  async create(createDTO: CreateUserDto, @UserC() user: IUser) {
+    const { name, email, password, age, gender, address, role, company } =
+      createDTO;
+    const hashPassword = this.getHashPassword(createDTO.password);
 
-  //   const user = await this.userModel.create({
-  //     email: createDTO.email,
-  //     password: hashPassword,
-  //     name: createDTO.name,
-  //   });
-  //   return user;
-  // }
+    let newUser = await this.userModel.create({
+      name,
+      email,
+      password: hashPassword,
+      age,
+      gender,
+      address,
+      role,
+      company,
+      // createdBy: {
+      //   _id: user._id,
+      //   email: user.email,
+      // },
+      // createdBy: {_id:user._id},
+    });
+    return newUser;
+  }
 
   async findAll() {
     return await this.userModel.find({});
@@ -114,7 +128,7 @@ export class UsersService implements OnModuleInit {
     const hashPassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name,
-      email : 'telecom21@gmail.com',
+      email: 'telecom21@gmail.com',
       password: hashPassword,
       age,
       gender,
