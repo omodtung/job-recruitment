@@ -76,6 +76,7 @@ export class UsersService implements OnModuleInit {
       address,
       role,
       company,
+      // fix this for it can run
       // createdBy: {
       //   _id: user._id,
       //   email: user.email,
@@ -105,10 +106,21 @@ export class UsersService implements OnModuleInit {
     });
   }
 
-  async update(updateUserDto: UpdateUserDto) {
-    return await this.userModel.updateOne(
+  async update(updateUserDto: UpdateUserDto, @UserC() user: IUser) {
+    // return await this.userModel.updateOne(
+    //   { _id: updateUserDto._id },
+    //   { ...updateUserDto },
+    // );
+    const updated = await this.userModel.updateOne(
       { _id: updateUserDto._id },
-      { ...updateUserDto },
+      {
+        ...updateUserDto,
+        // fix this how it can run
+        // updatedBy: {
+        //   _id: user._id,
+        //   email: user.email,
+        // },
+      },
     );
   }
 

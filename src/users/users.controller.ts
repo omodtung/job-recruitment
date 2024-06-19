@@ -24,8 +24,7 @@ export class UsersController {
     // return this.usersService.create(createDTO);
 
     let newUser = await this.usersService.create(createDTO, user);
-    return {_id : newUser._id , createdAt : newUser.createdAt};
-   
+    return { _id: newUser._id, createdAt: newUser.createdAt };
   }
 
   @Get()
@@ -42,8 +41,11 @@ export class UsersController {
   }
 
   @Patch()
-  update(@Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(updateUserDto);
+  @ResponseMessage('update a user')
+  async update(@Body() updateUserDto: UpdateUserDto, @User() user: IUser) {
+    let UpdateUser = await this.usersService.update(updateUserDto, user);
+
+    return UpdateUser;
   }
 
   @Delete(':id')
