@@ -6,6 +6,8 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -13,31 +15,20 @@ import { UpdateUserDto } from './dto/update-user.dto';
 import { ResponseMessage, User } from '@/decorator/customize';
 import { User as UserSche } from './schemas/user.schema';
 import { IUser } from './users.interface';
+import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
 
 @Controller('users')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard)
   @ResponseMessage('create a new user')
   async create(@Body() createDTO: CreateUserDto, @User() user: IUser) {
     // return this.usersService.create(createDTO);
 
     let newUser = await this.usersService.create(createDTO, user);
     return { _id: newUser._id, createdAt: newUser.createdAt };
-  }
-
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(
-    @Param('id')
-    id: string,
-  ) {
-    return this.usersService.findOne(id);
   }
 
   @Patch()
@@ -49,7 +40,27 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(id);
+  @ResponseMessage('Delete a user')
+  remove(@Param('id') id: string, @User() user: IUser) {
+    return this.usersService.remove(id, user);
+  }
+
+  // @Public()
+  // de khong can jwt thi phai co public
+  @Get(':id')
+  @ResponseMessage('fetch by user id')
+  async findOne(@Param('id') id: string) {
+    const findUser = await this.usersService.findOne(id);
+    return findUser;
+  }
+
+  @Get()
+  @ResponseMessage('Fetch List User with paginate')
+  async findAll(
+    @Query('page') currentPage: string,
+    @Query('limit') limit: string,
+    @Query() qs: string,
+  ) {
+    return await this.usersService.findAll(+currentPage, +limit, qs);
   }
 }

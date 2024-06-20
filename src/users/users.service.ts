@@ -10,6 +10,7 @@ import { SoftDeleteModel } from 'soft-delete-plugin-mongoose';
 import { IUser } from './users.interface';
 import { User as UserC } from '@/decorator/customize';
 import { use } from 'passport';
+import aqp from 'api-query-params';
 @Injectable()
 export class UsersService implements OnModuleInit {
   constructor(
@@ -86,8 +87,35 @@ export class UsersService implements OnModuleInit {
     return newUser;
   }
 
-  async findAll() {
-    return await this.userModel.find({});
+  async findAll(currentPage: number, limit: number, qs: string) {
+    // return await this.userModel.find({});
+    const { filter, sort, population } = aqp(qs);
+    delete filter.page;
+    delete filter.limit;
+    let offset = (+currentPage - 1) * +limit;
+    let defaultLimit = +limit ? +limit : 10;
+    const totalItems = (await this.userModel.find(filter)).length;
+    const totalPages = Math.ceil(totalItems / defaultLimit);
+    const result = await this.userModel
+      .find(filter)
+      .skip(offset)
+      .limit(defaultLimit)
+      // @ts-ignore: Unreachable code error
+      .sort(sort as any)
+      .select('-password')
+      .populate(population)
+      // dung population de join cac bang lai
+      .exec();
+
+    return {
+      meta: {
+        current: currentPage,
+        pageSize: limit,
+        pages: totalPages,
+        totals: totalItems,
+      },
+      result,
+    };
   }
 
   async findByEmail(email: string) {
@@ -98,12 +126,14 @@ export class UsersService implements OnModuleInit {
     return compareSync(hash, plain);
   }
 
-  findOne(id: string) {
+  async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
 
-    return this.userModel.findOne({
-      _id: id,
-    });
+    return await this.userModel
+      .findOne({
+        _id: id,
+      })
+      .select('-password');
   }
 
   async update(updateUserDto: UpdateUserDto, @UserC() user: IUser) {
@@ -124,10 +154,12 @@ export class UsersService implements OnModuleInit {
     );
   }
 
-  remove(id: string) {
-    return this.userModel.softDelete({
-      _id: id,
-    });
+  async remove(id: string, user: IUser) {
+    // return this.userModel.softDelete({
+    //   _id: id,
+    // });
+    if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
+    await this.userModel.updateOne({ _id: id });
   }
 
   async register(user: RegisterUserDto) {
@@ -150,3 +182,6 @@ export class UsersService implements OnModuleInit {
     return newRegister;
   }
 }
+
+
+

@@ -1,4 +1,4 @@
-import { Injectable, OnModuleInit, Query } from "@nestjs/common";
+import { Injectable, OnModuleInit, Query } from '@nestjs/common';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
 import { InjectModel } from '@nestjs/mongoose';
@@ -9,7 +9,6 @@ import { genSaltSync, hashSync } from 'bcryptjs';
 import { IUser } from '@/users/users.interface';
 import aqp from 'api-query-params';
 import { use } from 'passport';
-
 
 @Injectable()
 export class CompaniesService implements OnModuleInit {
@@ -42,42 +41,41 @@ export class CompaniesService implements OnModuleInit {
       },
     });
   }
- async findAll(currentPage :number , limit:number ,qs: string ) {
-
+  async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
-    
+
     delete filter.page;
     delete filter.limit;
     // let { sort } = aqp(qs);
-    let offset = (+currentPage - 1) * (+limit);
+    let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
     const totalItems = (await this.companyModel.find(filter)).length;
     const totalPages = Math.ceil(totalItems / defaultLimit);
-   
+
     const result = await this.companyModel
       .find(filter)
       .skip(offset)
       .limit(defaultLimit)
       // @ts-ignore: Unreachable code error
       .sort(sort as any)
-      
+
       .populate(population)
       // dung population de join cac bang lai
       .exec();
-  //   let { sort }= <{sort: any}>aqp(qs);
-  //   let { sort }: {sort: any}= aqp(qs);
-  // .sort(sort as any)
+    //   let { sort }= <{sort: any}>aqp(qs);
+    //   let { sort }: {sort: any}= aqp(qs);
+    // .sort(sort as any)
 
     // return `This action returns all HEHE companies`;
-   return {
+    return {
       meta: {
         current: currentPage,
-       pageSize: limit,
+        pageSize: limit,
         pages: totalPages,
-       totals: totalItems,
-     },
-     result
-   };
+        totals: totalItems,
+      },
+      result,
+    };
   }
 
   findOne(id: number) {
