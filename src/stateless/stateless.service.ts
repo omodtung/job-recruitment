@@ -3,12 +3,13 @@ import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from '@/users/users.interface';
 import { RegisterUserDto } from '@/users/dto/create-user.dto';
-
+import { ConfigService } from '@nestjs/config';
 @Injectable()
 export class StatelessService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
+    private configService: ConfigService,
   ) {}
 
   async validateUserStateless(username: string, pass: string): Promise<any> {
@@ -44,17 +45,23 @@ export class StatelessService {
       email,
       role,
     };
+
+    const refresh_token = this.createRefreshToken(payload);
+    // await this.usersService.updateUserToken
     return {
       access_token: this.jwtService.sign(payload),
-      _id,
-      name,
-      email,
-      role,
+      refresh_token,
+      user: {
+        _id,
+        name,
+        email,
+        role,
+      },
     };
-    // return {
-    //   access_token: this.jwtService.sign(payload)
-    // };
   }
+  // return {
+  //   access_token: this.jwtService.sign(payload)
+  // };
 
   async register(user: RegisterUserDto) {
     let newUser = await this.usersService.register(user);
@@ -65,4 +72,12 @@ export class StatelessService {
       createdAt: newUser?.createdAt,
     };
   }
+
+  createRefreshToken = (payload) => {
+    const refreshToken = this.jwtService.sign(payload, {
+      secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRED'),
+    });
+    return refreshToken;
+  };
 }

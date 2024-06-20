@@ -15,6 +15,7 @@ import { Request, Response } from 'express';
 import { AuthenticatedGuard } from './stateful/passport/stateful.local.authenticated.guard';
 import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 import { StatelessService } from './stateless/stateless.service';
+import { ConfigService } from '@nestjs/config';
 @Controller()
 export class AppController {
   constructor(

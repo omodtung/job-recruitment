@@ -17,6 +17,7 @@ export class StatelessController {
   constructor(private statelessService: StatelessService) {}
   @UseGuards(LocalAuthGuard)
   @Post('login')
+  @ResponseMessage("User login")
   async login(@Request() req) {
     return this.statelessService.login(req.user);
   }
