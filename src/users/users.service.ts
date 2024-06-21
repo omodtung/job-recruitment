@@ -182,7 +182,8 @@ export class UsersService implements OnModuleInit {
     });
     return newRegister;
   }
+
+  updateUserToken = async (refreshToken: string, _id: string) => {
+    return await this.userModel.updateOne({ _id }, { refreshToken });
+  };
 }
-
-
-

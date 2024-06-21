@@ -4,6 +4,8 @@ import { JwtService } from '@nestjs/jwt';
 import { IUser } from '@/users/users.interface';
 import { RegisterUserDto } from '@/users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
+import ms from 'ms';
+import { Request, Response } from 'express';
 @Injectable()
 export class StatelessService {
   constructor(
@@ -33,7 +35,7 @@ export class StatelessService {
     return user;
   }
 
-  async login(user: IUser) {
+  async login(user: IUser, response: Response) {
     // const payload = { username: user.email, sub: user._id, name: user.name };
 
     const { _id, name, email, role } = user;
@@ -45,9 +47,16 @@ export class StatelessService {
       email,
       role,
     };
+    console.log("test"+payload._id)
 
     const refresh_token = this.createRefreshToken(payload);
-    // await this.usersService.updateUserToken
+    // await this.usersService.
+    await this.usersService.updateUserToken(refresh_token, _id);
+    response.cookie('refresh_token', refresh_token, {
+      httpOnly: true,
+      maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRED')),
+    });
+
     return {
       access_token: this.jwtService.sign(payload),
       refresh_token,
