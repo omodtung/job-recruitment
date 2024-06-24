@@ -1,4 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  BadGatewayException,
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { UsersService } from '../users/users.service';
 import { JwtService } from '@nestjs/jwt';
 import { IUser } from '@/users/users.interface';
@@ -6,6 +11,7 @@ import { RegisterUserDto } from '@/users/dto/create-user.dto';
 import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { Request, Response } from 'express';
+import { User } from '@/decorator/customize';
 @Injectable()
 export class StatelessService {
   constructor(
@@ -47,7 +53,7 @@ export class StatelessService {
       email,
       role,
     };
-    console.log("test"+payload._id)
+    console.log('test' + payload._id);
 
     const refresh_token = this.createRefreshToken(payload);
     // await this.usersService.
@@ -88,5 +94,50 @@ export class StatelessService {
       expiresIn: this.configService.get<string>('JWT_REFRESH_EXPIRED'),
     });
     return refreshToken;
+  };
+
+  processNewToken = async (refresh_token: string, response: Response) => {
+    try {
+      this.jwtService.verify(refresh_token, {
+        secret: this.configService.get<string>('JWT_REFRESH_TOKEN_SECRET'),
+      });
+
+      let user = await this.usersService.findUserByToken(refresh_token);
+      if (user) {
+        const { _id, name, email, role } = user;
+        const payload = {
+          sub: 'token login',
+          iss: 'from server',
+          _id,
+          name,
+          email,
+          role,
+        };
+        console.log('test' + payload._id);
+
+        const refresh_token = this.createRefreshToken(payload);
+        // await this.usersService.
+        await this.usersService.updateUserToken(refresh_token, _id.toString());
+        response.cookie('refresh_token', refresh_token, {
+          httpOnly: true,
+          maxAge: ms(this.configService.get<string>('JWT_REFRESH_EXPIRED')),
+        });
+
+        return {
+          access_token: this.jwtService.sign(payload),
+          refresh_token,
+          user: {
+            _id,
+            name,
+            email,
+            role,
+          },
+        };
+      }
+    } catch (error) {
+      throw new BadRequestException(
+        'Refresh token khong hop le vui long login',
+      );
+    }
   };
 }

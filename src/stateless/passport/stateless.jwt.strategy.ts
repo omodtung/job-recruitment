@@ -26,13 +26,21 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 
   //   update decode Token Giai ma token
   async validate(payload: IUser) {
-    const { _id } = payload;
+    const { _id, name, email, role } = payload;
 
     const user = await this.authService.findUser(_id);
 
     if (!user) {
       throw new UnauthorizedException('Invalid TOken!');
     }
-    return user;
+
+    // gan vao req.user
+    // return user;
+    return {
+      _id,
+      name,
+      email,
+      role,
+    };
   }
 }

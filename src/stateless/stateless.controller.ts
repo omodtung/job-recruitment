@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Post,
+  Req,
   Request,
   Res,
   UseGuards,
@@ -10,9 +11,14 @@ import {
 import { LocalAuthGuard } from './passport/stateless.local.guard';
 import { StatelessService } from './stateless.service';
 import { JwtAuthGuard } from './passport/stateless.jwt.auth.guard';
-import { ResponseMessage } from '@/decorator/customize';
+import { ResponseMessage, User } from '@/decorator/customize';
 import { RegisterUserDto } from '@/users/dto/create-user.dto';
-import { Response } from 'express';
+import { Response, response } from 'express';
+import cookieParser from 'cookie-parser';
+import { Request as RequestExpress } from 'express';
+// import { Request } from 'express';
+import { IUser } from '@/users/users.interface';
+// import { Request as Req1 } from 'express';
 @Controller('stateless')
 export class StatelessController {
   constructor(private statelessService: StatelessService) {}
@@ -35,5 +41,26 @@ export class StatelessController {
   @Post('/register')
   handleRegister(@Body() registerUserDto: RegisterUserDto) {
     return this.statelessService.register(registerUserDto);
+  }
+
+  //  flow run
+  // header-> authController -> jwt strategy ( ham  giai ma    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(), ) ->  decorator/ customize ;
+
+  //fix for this take data user back
+
+  @ResponseMessage('Get user information')
+  @Get('/account')
+  handleGetAccount(@User() user: IUser) {
+    return { user };
+  }
+
+  @ResponseMessage('Get User by refresh token')
+  @Get('/refresh')
+  handleRefreshToken(
+    @Req() request: RequestExpress,
+    @Res({ passthrough: true }) response: Response,
+  ) {
+    const refresh_token = request.cookies['refresh_token'];
+    return this.statelessService.processNewToken(refresh_token, response);
   }
 }
