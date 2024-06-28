@@ -12,6 +12,7 @@ import { ConfigService } from '@nestjs/config';
 import ms from 'ms';
 import { Request, Response } from 'express';
 import { User } from '@/decorator/customize';
+import { use } from 'passport';
 @Injectable()
 export class StatelessService {
   constructor(
@@ -139,5 +140,13 @@ export class StatelessService {
         'Refresh token khong hop le vui long login',
       );
     }
+  };
+
+  logout = async (response: Response, user: IUser) => {
+    // console.log(user._id);
+    await this.usersService.updateUserToken('', user._id);
+
+    response.clearCookie('refresh_token');
+    return 'ok';
   };
 }
