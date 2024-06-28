@@ -91,8 +91,8 @@ export class UsersService implements OnModuleInit {
   async findAll(currentPage: number, limit: number, qs: string) {
     // return await this.userModel.find({});
     const { filter, sort, population } = aqp(qs);
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
     const totalItems = (await this.userModel.find(filter)).length;
