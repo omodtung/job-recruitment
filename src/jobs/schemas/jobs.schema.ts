@@ -9,10 +9,13 @@ export class Job {
   name: string;
 
   @Prop()
-  skill: string;
+  skill: string[];
 
-  @Prop()
-  company: string;
+  @Prop({ type: Object })
+  company: {
+    _id: mongoose.Schema.Types.ObjectId;
+    name: string;
+  };
 
   @Prop()
   location: string;
@@ -32,6 +35,35 @@ export class Job {
 
   @Prop()
   isActive: Boolean;
+
+
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  updatedAt: Date;
+  @Prop({ type: Object })
+  createdBy: {
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
+
+  @Prop({ type: Object })
+  updatedBy: {
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
+
+  @Prop({ type: Object })
+  deleteBy: {
+    _id: mongoose.Schema.Types.ObjectId;
+    email: string;
+  };
+  @Prop()
+  isDeleted: boolean;
+
+  @Prop()
+  deletedAt: Date;
 }
 
 export const JobSchema = SchemaFactory.createForClass(Job);
