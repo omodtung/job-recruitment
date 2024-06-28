@@ -14,6 +14,8 @@ export const ResponseMessage = (message: string) =>
 export const User = createParamDecorator(
   (data: unknown, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest();
+    console.log(request);
+    console.log('test In Customize' + request.user);
     // console.log(request);
     return request.user;
   },
