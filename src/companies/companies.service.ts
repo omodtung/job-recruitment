@@ -44,8 +44,8 @@ export class CompaniesService implements OnModuleInit {
   async findAll(currentPage: number, limit: number, qs: string) {
     const { filter, sort, population } = aqp(qs);
 
-    delete filter.page;
-    delete filter.limit;
+    delete filter.current;
+    delete filter.pageSize;
     // let { sort } = aqp(qs);
     let offset = (+currentPage - 1) * +limit;
     let defaultLimit = +limit ? +limit : 10;
