@@ -52,7 +52,7 @@ export class CompaniesController {
     @Body() updateCompanyDto: UpdateCompanyDto,
     @User() user: IUser,
   ) {
-    console.log(user);
+    // console.log(user);
 
     return this.companiesService.update(id, updateCompanyDto, user);
   }
