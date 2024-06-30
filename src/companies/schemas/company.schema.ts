@@ -18,6 +18,8 @@ export class Company {
   createdAt: Date;
 
   @Prop()
+  logo: string;
+  @Prop()
   updatedAt: Date;
 
   @Prop({ type: Object })

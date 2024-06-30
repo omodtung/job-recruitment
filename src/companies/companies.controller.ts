@@ -13,7 +13,7 @@ import {
 import { CompaniesService } from './companies.service';
 import { CreateCompanyDto } from './dto/create-company.dto';
 import { UpdateCompanyDto } from './dto/update-company.dto';
-import { User } from '@/decorator/customize';
+import { Public, User } from '@/decorator/customize';
 import { IUser } from '@/users/users.interface';
 import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
 import { ResponseMessage } from '@/decorator/customize';
@@ -31,6 +31,7 @@ export class CompaniesController {
   }
 
   @Get()
+  @Public()
   @ResponseMessage('Fetch List Company with Paginate')
   findAll(
     @Query('current') currentPage: string,
@@ -41,6 +42,7 @@ export class CompaniesController {
   }
 
   @Get(':id')
+  @Public()
   findOne(@Param('id') id: string) {
     return this.companiesService.findOne(+id);
   }
