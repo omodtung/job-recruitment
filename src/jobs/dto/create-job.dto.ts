@@ -32,7 +32,7 @@ export class CreateJobDto {
 
   @IsNotEmpty({ message: 'level khong duoc de trongi' })
   level: string;
-
+  
   @IsEmail({}, { message: 'discription  không đúng định dạng' })
   @IsNotEmpty({ message: 'discription không được để trống' })
   description: string;
@@ -58,4 +58,7 @@ export class CreateJobDto {
   @ValidateNested()
   @Type(() => Company)
   company: Company;
+
+
+  location : string
 }

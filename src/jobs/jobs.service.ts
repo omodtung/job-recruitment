@@ -27,7 +27,7 @@ export class JobsService implements OnModuleInit {
       description,
       startDate,
       endDate,
-      isActive,
+      isActive,location,
     } = createJobDto;
     let newJobs = await this.jobModel.create({
       name,
@@ -40,6 +40,7 @@ export class JobsService implements OnModuleInit {
       startDate,
       endDate,
       isActive,
+      location,
       createdBy: {
         _id: user._id,
         email: user.email,
@@ -89,8 +90,8 @@ export class JobsService implements OnModuleInit {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} job`;
+  async findOne(_id: string) {
+    return await this.jobModel.findOne({ _id});
   }
 
   async update(_id: string, updateJobDto: UpdateJobDto, user: IUser) {
