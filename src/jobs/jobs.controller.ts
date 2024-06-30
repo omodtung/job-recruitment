@@ -11,7 +11,7 @@ import {
 import { JobsService } from './jobs.service';
 import { CreateJobDto } from './dto/create-job.dto';
 import { UpdateJobDto } from './dto/update-job.dto';
-import { ResponseMessage, User } from '@/decorator/customize';
+import { Public, ResponseMessage, User } from '@/decorator/customize';
 import { IUser } from '@/users/users.interface';
 import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
 import { JwtStrategy } from '@/stateless/passport/stateless.jwt.strategy';
@@ -28,21 +28,21 @@ export class JobsController {
     return this.jobsService.create(createJobDto, user);
   }
 
-
   @Get()
+  @Public()
   @ResponseMessage('Fetch List jobs with Paginate')
   findAll(
     @Query('current') currentPage: string,
     @Query('pageSize') limit: string,
     @Query() qs: string,
   ) {
-    return this.jobsService. findAll(+currentPage, +limit, qs);
+    return this.jobsService.findAll(+currentPage, +limit, qs);
   }
 
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.jobsService.findOne(+id);
+  @Public()
+  findOne(@Param('id') _id: string) {
+    return this.jobsService.findOne(_id);
   }
 
   @Patch(':id')
