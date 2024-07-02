@@ -1,34 +1,73 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { ResumesService } from './resumes.service';
 import { CreateResumeDto } from './dto/create-resume.dto';
 import { UpdateResumeDto } from './dto/update-resume.dto';
+import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
+import { Public, ResponseMessage, User } from '@/decorator/customize';
+import { IUser } from '@/users/users.interface';
 
 @Controller('resumes')
 export class ResumesController {
   constructor(private readonly resumesService: ResumesService) {}
 
   @Post()
-  create(@Body() createResumeDto: CreateResumeDto) {
-    return this.resumesService.create(createResumeDto);
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage('Post/create From CreateuResumeDto')
+  create(@Body() createResumeDto: CreateResumeDto, @User() user: IUser) {
+    return this.resumesService.create(createResumeDto, user);
   }
 
   @Get()
-  findAll() {
-    return this.resumesService.findAll();
+  @Public()
+  @ResponseMessage('Fetch List Resume with Paginate')
+  findAll(
+    @Query('current') currentPage: string,
+    @Query('pageSize') limit: string,
+    @Query() qs: string,
+  ) {
+    return this.resumesService.findAll(+currentPage, +limit, qs);
   }
-
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.resumesService.findOne(+id);
+  findOne(@Param('id') _id: string) {
+    return this.resumesService.findOne(_id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateResumeDto: UpdateResumeDto) {
-    return this.resumesService.update(+id, updateResumeDto);
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage('Update from Resume ')
+  async update(
+    //lay id tu link url
+    @Param('id') _id: string,
+  //truy vet nguoi sua
+    @User() user: IUser,
+    //update only trang thai
+    @Body('status') status: string,
+  ) {
+    return await this.resumesService.update(_id, status, user);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.resumesService.remove(+id);
+  @UseGuards(JwtAuthGuard)
+  remove(@Param('id') _id: string, @User() user: IUser) {
+    return this.resumesService.remove(_id, user);
   }
+
+
+  @Post('by-user')
+  @ResponseMessage(" Get Resume by user ")
+  getResumesByUser (@User() user : IUser )
+  {
+    return this.resumesService.findByUser (user);
+  }
+  
 }
