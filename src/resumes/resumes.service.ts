@@ -24,6 +24,7 @@ export class ResumesService {
       email: user.email,
       userId: user._id,
       status: 'Pending',
+      ...createResumeDto,
       history: [
         {
           status: 'PENDING',
@@ -64,7 +65,7 @@ email: user.email
   }
 
   async findAll(currentPage: number, limit: number, qs: string) {
-    const { filter, sort, population } = aqp(qs);
+    const { filter, sort, population, projection } = aqp(qs);
 
     delete filter.current;
     delete filter.pageSize;
@@ -81,6 +82,7 @@ email: user.email
       .sort(sort as any)
 
       .populate(population)
+      .select(projection as any)
       // dung population de join cac bang lai
       .exec();
     //   let { sort }= <{sort: any}>aqp(qs);
@@ -150,10 +152,18 @@ email: user.email
 
     return this.ResumeModel.softDelete({ _id: _id });
   }
-
+// api fetch resume - by -user=>populate companyId, jobId
   async findByUser(user: IUser) {
     return await this.ResumeModel.find({
       userId: user._id,
-    });
+    })
+      .sort('createdAt')
+      .populate([
+        { path: 'companyId', select: { name: 1 } },
+        {
+          path: 'jobId',
+          select: { name: 1 },
+        },
+      ]);
   }
 }

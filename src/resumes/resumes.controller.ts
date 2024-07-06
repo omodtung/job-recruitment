@@ -29,7 +29,7 @@ export class ResumesController {
 
   @Get()
   @Public()
-  @ResponseMessage('Fetch List Resume with Paginate')
+  @ResponseMessage('Fetch List resume with Paginate')
   findAll(
     @Query('current') currentPage: string,
     @Query('pageSize') limit: string,
