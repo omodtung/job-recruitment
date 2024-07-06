@@ -78,8 +78,8 @@ export class CompaniesService implements OnModuleInit {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} company`;
+  async findOne(_id: string) {
+    return await this.companyModel.findOne({ _id });
   }
 
   async update(id: string, updateCompanyDto: UpdateCompanyDto, user: IUser) {
