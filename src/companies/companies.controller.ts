@@ -43,8 +43,8 @@ export class CompaniesController {
 
   @Get(':id')
   @Public()
-  findOne(@Param('id') id: string) {
-    return this.companiesService.findOne(+id);
+  findOne(@Param('id') _id: string) {
+    return this.companiesService.findOne(_id);
   }
 
   @Patch(':id')
