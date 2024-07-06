@@ -118,9 +118,9 @@ export class UsersService implements OnModuleInit {
       result,
     };
   }
-
+// from api login
   async findByEmail(email: string) {
-    return await this.userModel.findOne({ email });
+    return (await this.userModel.findOne({ email })).populate({path :"role",select :{name :1 ,permissions:1}});
   }
 
   checkPassword(hash: string, plain: string) {
@@ -134,7 +134,9 @@ export class UsersService implements OnModuleInit {
       .findOne({
         _id: id,
       })
-      .select('-password');
+      .select('-password')
+      // find name trong role xem name do la role nao
+      .populate ({path : "role",select :{name :1,_id :1}})
   }
 
   async update(updateUserDto: UpdateUserDto, @UserC() user: IUser) {
@@ -146,21 +148,37 @@ export class UsersService implements OnModuleInit {
       { _id: updateUserDto._id },
       {
         ...updateUserDto,
-        // fix this how it can run
-        // updatedBy: {
-        //   _id: user._id,
-        //   email: user.email,
-        // },
+
+        updatedBy: {
+          _id: user._id,
+          email: user.email,
+        },
       },
     );
   }
 
-  async remove(id: string, user: IUser) {
-    // return this.userModel.softDelete({
-    //   _id: id,
-    // });
-    if (!mongoose.Types.ObjectId.isValid(id)) return `not found user`;
-    await this.userModel.updateOne({ _id: id });
+  async remove(_id: string, user: IUser) {
+    if (!mongoose.Types.ObjectId.isValid(_id)) return ' not Found';
+ const foundUser = await this.userModel.findById(_id);
+ if ( foundUser.email =="admin@gmail.com")
+
+ {
+  throw new BadRequestException ("khong the xoa email admin")
+ }
+
+    await this.userModel.updateOne(
+      {
+        _id: _id,
+      },
+      {
+        deleteBy: {
+          _id: user._id,
+          email: user.email,
+        },
+      },
+    );
+
+    return this.userModel.softDelete({ _id: _id });
   }
 
   async register(user: RegisterUserDto) {
@@ -173,7 +191,7 @@ export class UsersService implements OnModuleInit {
     const hashPassword = this.getHashPassword(password);
     let newRegister = await this.userModel.create({
       name,
-      email: 'telecom21@gmail.com',
+      email,
       password: hashPassword,
       age,
       gender,
@@ -183,7 +201,7 @@ export class UsersService implements OnModuleInit {
     return newRegister;
   }
 
-  updateUserToken = async (refreshToken: string, _id: string  ) => {
+  updateUserToken = async (refreshToken: string, _id: string) => {
     return await this.userModel.updateOne({ _id }, { refreshToken });
   };
 
@@ -191,3 +209,7 @@ export class UsersService implements OnModuleInit {
     return await this.userModel.findOne({ refresh_token });
   }
 }
+function populate(arg0: { path: string; select: { name: number; _id: number; }; }) {
+  throw new Error('Function not implemented.');
+}
+
