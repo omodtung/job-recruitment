@@ -26,7 +26,9 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     const targetMethod = request.method;
     const targetEndPoint = request.route?.path;
     const permission = user?.permissions ??[];
-    const isExist= permission.find ( permission => targetMethod===permission.method && targetEndPoint ===permission.apiPath)
+    let isExist= permission.find ( permission => targetMethod===permission.method && targetEndPoint ===permission.apiPath)
+
+    if (targetEndPoint.startsWith("/api/v1/auth")) isExist = true;
     if (!isExist)
     {
       throw new ForbiddenException("Ban Khong Co Quyen truy cap endpoint")

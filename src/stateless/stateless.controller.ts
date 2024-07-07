@@ -19,11 +19,13 @@ import { Request as RequestExpress } from 'express';
 // import { Request } from 'express';
 import { IUser } from '@/users/users.interface';
 import { use } from 'passport';
+import { ThrottlerGuard } from '@nestjs/throttler';
 // import { Request as Req1 } from 'express';
 @Controller('auth')
 export class StatelessController {
   constructor(private statelessService: StatelessService) {}
   @UseGuards(LocalAuthGuard)
+  @UseGuards(ThrottlerGuard)
   @Post('login')
   @ResponseMessage('User login')
   // @Res({passthrough:true}) dong nay khi data duoc tra ve chi co server co the doc duoc
