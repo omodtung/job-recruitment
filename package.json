@@ -30,6 +30,7 @@
     "@nestjs/mongoose": "^9.2.2",
     "@nestjs/passport": "^9.0.3",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/throttler": "^4.1.0",
     "api-query-params": "^5.4.0",
     "bcryptjs": "^2.4.3",
     "class-transformer": "^0.5.1",
@@ -49,6 +50,7 @@
     "soft-delete-plugin-mongoose": "^1.0.17"
   },
   "devDependencies": {
+    "@compodoc/compodoc": "^1.1.25",
     "@nestjs/cli": "^9.0.0",
     "@nestjs/schematics": "^9.0.0",
     "@nestjs/testing": "^9.0.0",
