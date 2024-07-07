@@ -30,6 +30,7 @@ export class PermissionsService {
       );
     }
     const newPermisson = await this.PermissonModel.create({
+      
       name,
       apiPath,
       method,

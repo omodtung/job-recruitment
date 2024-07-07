@@ -17,6 +17,7 @@ export class roles {
   isActive: boolean;
 
   @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Permissions.name })
+  // @Prop()
   permissions: Permissions[];
   @Prop()
   createdAt: Date;

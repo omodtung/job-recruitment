@@ -80,6 +80,7 @@ export class RolesService {
       result,
     };
   }
+  // 
   async findOne(id: string) {
     if (!mongoose.Types.ObjectId.isValid(id)) {
       throw new BadRequestException('not found finding');
