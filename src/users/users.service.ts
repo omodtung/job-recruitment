@@ -13,50 +13,50 @@ import { use } from 'passport';
 import aqp from 'api-query-params';
 // import { ConfigService } from '@nestjs/config';
 @Injectable()
-export class UsersService implements OnModuleInit {
+export class UsersService  {
   constructor(
     @InjectModel(User.name)
     private userModel: SoftDeleteModel<UserDocument>,
     private configService: ConfigService,
   ) {}
 
-  async onModuleInit() {
-    const count = await this.userModel.count();
-    if (count === 0) {
-      const salt = genSaltSync(10);
-      const hash = hashSync(
-        this.configService.get<string>('INIT_USER_PASSWORD'),
-        salt,
-      );
-      await this.userModel.insertMany([
-        {
-          name: 'Eric',
-          email: 'admin@gmail.com',
-          password: hash,
-        },
-        {
-          name: 'User',
-          email: 'user@gmail.com',
-          password: hash,
-        },
-        {
-          name: 'User 1',
-          email: 'user1@gmail.com',
-          password: hash,
-        },
-        {
-          name: 'User 2',
-          email: 'user2@gmail.com',
-          password: hash,
-        },
-        {
-          name: 'User 3',
-          email: 'user3@gmail.com',
-          password: hash,
-        },
-      ]);
-    }
-  }
+  // async onModuleInit() {
+  //   const count = await this.userModel.count();
+  //   if (count === 0) {
+  //     const salt = genSaltSync(10);
+  //     const hash = hashSync(
+  //       this.configService.get<string>('INIT_USER_PASSWORD'),
+  //       salt,
+  //     );
+  //     await this.userModel.insertMany([
+  //       {
+  //         name: 'Eric',
+  //         email: 'admin@gmail.com',
+  //         password: hash,
+  //       },
+  //       {
+  //         name: 'User',
+  //         email: 'user@gmail.com',
+  //         password: hash,
+  //       },
+  //       {
+  //         name: 'User 1',
+  //         email: 'user1@gmail.com',
+  //         password: hash,
+  //       },
+  //       {
+  //         name: 'User 2',
+  //         email: 'user2@gmail.com',
+  //         password: hash,
+  //       },
+  //       {
+  //         name: 'User 3',
+  //         email: 'user3@gmail.com',
+  //         password: hash,
+  //       },
+  //     ]);
+  //   }
+  // }
 
   getHashPassword = (password: string) => {
     const salt = genSaltSync(10);
@@ -119,6 +119,8 @@ export class UsersService implements OnModuleInit {
     };
   }
 // from api login
+// api login
+// - trả thêm permission của người dùng
   async findByEmail(email: string) {
     return (await this.userModel.findOne({ email })).populate({path :"role",select :{name :1 ,permissions:1}});
   }
