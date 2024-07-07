@@ -9,12 +9,15 @@ import { ConfigService } from '@nestjs/config';
 import { JwtStrategy } from './passport/stateless.jwt.strategy';
 
 import ms from 'ms';
+import { RolesModule } from '@/roles/roles.module';
 @Module({
   controllers: [StatelessController],
-  providers: [StatelessService, LocalStrategy, JwtStrategy],
+  providers: [StatelessService, LocalStrategy, JwtStrategy ],
   imports: [
     UsersModule,
     PassportModule,
+ RolesModule,
+    
     // JwtModule.({
     //   secret: jwtConstants.secret,
     //   signOptions: { expiresIn: '60s' },

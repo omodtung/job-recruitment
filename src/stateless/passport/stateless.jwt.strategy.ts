@@ -5,6 +5,8 @@ import { ConfigService } from '@nestjs/config';
 import { IUser } from '@/users/users.interface';
 import { StatelessService } from '../stateless.service';
 import { Console } from 'console';
+import { User } from '@/decorator/customize';
+import { RolesService } from '@/roles/roles.service';
 
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy) {
@@ -12,6 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   constructor(
     protected configService: ConfigService,
     private authService: StatelessService,
+    private rolesService : RolesService,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
@@ -27,6 +30,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   //   update decode Token Giai ma token
   async validate(payload: IUser) {
     const { _id, name, email, role } = payload;
+    //can gan them permission vao req.user
+    // querry nguoc xuong database
+    const userRole = role as unknown as {_id :string ; name : string};
+    const temp  = (await this.rolesService.findOne(userRole._id)).toObject();
+    
 
     const user = await this.authService.findUser(_id);
 
@@ -41,6 +49,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       name,
       email,
       role,
+    permissions :temp?.permissions ?? [],
     };
   }
 }

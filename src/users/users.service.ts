@@ -13,7 +13,7 @@ import { use } from 'passport';
 import aqp from 'api-query-params';
 // import { ConfigService } from '@nestjs/config';
 @Injectable()
-export class UsersService  {
+export class UsersService {
   constructor(
     @InjectModel(User.name)
     private userModel: SoftDeleteModel<UserDocument>,
@@ -118,11 +118,14 @@ export class UsersService  {
       result,
     };
   }
-// from api login
-// api login
-// - trả thêm permission của người dùng
+  // from api login
+  // api login
+  // - trả thêm permission của người dùng
   async findByEmail(email: string) {
-    return (await this.userModel.findOne({ email })).populate({path :"role",select :{name :1 ,permissions:1}});
+    return (await this.userModel.findOne({ email })).populate({
+      path: 'role',
+      select: { name: 1, permissions: 1 },
+    });
   }
 
   checkPassword(hash: string, plain: string) {
@@ -138,7 +141,7 @@ export class UsersService  {
       })
       .select('-password')
       // find name trong role xem name do la role nao
-      .populate ({path : "role",select :{name :1,_id :1}})
+      .populate({ path: 'role', select: { name: 1, _id: 1 } });
   }
 
   async update(updateUserDto: UpdateUserDto, @UserC() user: IUser) {
@@ -161,12 +164,10 @@ export class UsersService  {
 
   async remove(_id: string, user: IUser) {
     if (!mongoose.Types.ObjectId.isValid(_id)) return ' not Found';
- const foundUser = await this.userModel.findById(_id);
- if ( foundUser.email =="admin@gmail.com")
-
- {
-  throw new BadRequestException ("khong the xoa email admin")
- }
+    const foundUser = await this.userModel.findById(_id);
+    if (foundUser.email === 'admin@gmail.com') {
+      throw new BadRequestException('khong the xoa email admin');
+    }
 
     await this.userModel.updateOne(
       {
@@ -211,7 +212,9 @@ export class UsersService  {
     return await this.userModel.findOne({ refresh_token });
   }
 }
-function populate(arg0: { path: string; select: { name: number; _id: number; }; }) {
+function populate(arg0: {
+  path: string;
+  select: { name: number; _id: number };
+}) {
   throw new Error('Function not implemented.');
 }
-
