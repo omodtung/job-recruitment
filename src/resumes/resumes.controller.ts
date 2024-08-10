@@ -22,8 +22,10 @@ export class ResumesController {
 
   @Post()
   @UseGuards(JwtAuthGuard)
-  @ResponseMessage('Post/create From CreateuResumeDto')
+  @ResponseMessage('Post/create From CreateResumeDto')
   create(@Body() createResumeDto: CreateResumeDto, @User() user: IUser) {
+    console.log ('--------------------------------------------------------------------------------------------------------------------------------------------------------------------------')
+    console.log(JSON.stringify(createResumeDto, null, 2));
     return this.resumesService.create(createResumeDto, user);
   }
 
@@ -48,7 +50,7 @@ export class ResumesController {
   async update(
     //lay id tu link url
     @Param('id') _id: string,
-  //truy vet nguoi sua
+    //truy vet nguoi sua
     @User() user: IUser,
     //update only trang thai
     @Body('status') status: string,
@@ -62,12 +64,10 @@ export class ResumesController {
     return this.resumesService.remove(_id, user);
   }
 
-
   @Post('by-user')
-  @ResponseMessage(" Get Resume by user ")
-  getResumesByUser (@User() user : IUser )
-  {
-    return this.resumesService.findByUser (user);
+  @UseGuards(JwtAuthGuard)
+  @ResponseMessage(' Get Resume by user ')
+  getResumesByUser(@User() user: IUser) {
+    return this.resumesService.findByUser(user);
   }
-  
 }

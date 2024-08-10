@@ -157,7 +157,7 @@ email: user.email
     return await this.ResumeModel.find({
       userId: user._id,
     })
-      .sort('createdAt')
+      .sort('-createdAt')
       .populate([
         { path: 'companyId', select: { name: 1 } },
         {

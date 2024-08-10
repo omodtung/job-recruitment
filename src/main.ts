@@ -10,7 +10,7 @@ import ms from 'ms';
 import passport from 'passport';
 import { JwtAuthGuard } from '@/stateless/passport/stateless.jwt.auth.guard';
 import { TransformInterceptor } from './core/transform.interceptor';
-import { VersioningType } from '@nestjs/common';
+import { ValidationPipe, VersioningType } from '@nestjs/common';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 // import { JwtAuthGuard } from './stateless/passport/stateless.jwt.auth.guard';
 // import * as cookieParser from 'cookie-parser';
@@ -67,6 +67,9 @@ async function bootstrap() {
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     credentials: true,
   });
+
+
+  app.useGlobalPipes(new ValidationPipe());
   await app.listen(port);
 }
 

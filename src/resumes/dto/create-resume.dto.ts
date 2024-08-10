@@ -2,13 +2,13 @@ import { IsMongoId, IsNotEmpty } from 'class-validator';
 import mongoose from 'mongoose';
 
 export class CreateResumeDto {
-  @IsNotEmpty()
+  // @IsNotEmpty()
   email: string;
-  @IsNotEmpty()
+  // @IsNotEmpty()
   userId: mongoose.Schema.Types.ObjectId;
   @IsNotEmpty()
   url: string;
-  @IsNotEmpty()
+  // @IsNotEmpty()
   status: string;
   @IsNotEmpty()
   companyId: mongoose.Schema.Types.ObjectId;

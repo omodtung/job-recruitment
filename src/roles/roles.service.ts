@@ -31,6 +31,9 @@ export class RolesService {
       description,
       isActive,
       permissions,
+
+
+
       createdBy: {
         _id: user._id,
         email: user.email,
@@ -87,7 +90,7 @@ export class RolesService {
     }
     return (await this.rolesModel.findById(id)).populate({
       path: 'permissions',
-      select: { _id: 1, apiPath: 1, name: 1, method: 1 },
+      select: { _id: 1, apiPath: 1, name: 1, method: 1 ,module :1  },
     });
   }
 
@@ -98,10 +101,10 @@ export class RolesService {
       throw new BadRequestException('not found finding');
     }
     const { name, description, isActive, permissions } = updateRoleDto;
-    const isExist = await this.rolesModel.findOne({ name });
-    if (isExist) {
-      throw new BadRequestException(`role  voi name = ${name} da ton tai`);
-    }
+    // const isExist = await this.rolesModel.findOne({ name });
+    // if (isExist) {
+    //   throw new BadRequestException(`role  voi name = ${name} da ton tai`);
+    // }
     const updated = await this.rolesModel.updateOne(
       //this is id document or this document_id
       { _id: _id },
@@ -111,7 +114,7 @@ export class RolesService {
         isActive,
         permissions,
         updatedBy: {
-          id: user._id,
+          _id: user._id,
           email: user.email,
         },
       },

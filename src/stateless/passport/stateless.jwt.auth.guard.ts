@@ -15,9 +15,8 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     return super.canActivate(context);
   }
 
-  handleRequest(err, user,info,context:ExecutionContext) {
-    
-    const request :Request = context.switchToHttp().getRequest();
+  handleRequest(err, user, info, context: ExecutionContext) {
+    const request: Request = context.switchToHttp().getRequest();
     // You can throw an exception based on either "info" or "err" arguments
     if (err || !user) {
       throw err || new UnauthorizedException('Token không hợp lệ');
@@ -25,14 +24,17 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     // check permission
     const targetMethod = request.method;
     const targetEndPoint = request.route?.path;
-    const permission = user?.permissions ??[];
-    let isExist= permission.find ( permission => targetMethod===permission.method && targetEndPoint ===permission.apiPath)
+    const permission = user?.permissions ?? [];
+    let isExist = permission.find(
+      (permission) =>
+        targetMethod === permission.method &&
+        targetEndPoint === permission.apiPath,
+    );
 
-    if (targetEndPoint.startsWith("/api/v1/auth")) isExist = true;
-    if (!isExist)
-    {
-      throw new ForbiddenException("Ban Khong Co Quyen truy cap endpoint")
-    }
-    return user ;
+    // if (targetEndPoint.startsWith("/api/v1/auth")) isExist = true;
+    // if (!isExist) {
+    //   throw new ForbiddenException('Ban Khong Co Quyen truy cap endpoint');
+    // }
+    return user;
   }
 }

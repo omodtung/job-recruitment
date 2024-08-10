@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import mongoose, { HydratedDocument, mongo } from 'mongoose';
 import { Company } from '@/companies/schemas/company.schema';
 import { Job } from '@/jobs/schemas/jobs.schema';
-import {Permissions} from "@/permissions/schema/permissions.schema";
+import { Permissions } from '@/permissions/schema/permissions.schema';
 
 export type rolesDocument = HydratedDocument<roles>;
 
@@ -16,8 +16,7 @@ export class roles {
   @Prop()
   isActive: boolean;
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: Permissions.name })
-  // @Prop()
+  @Prop({ type: [mongoose.Schema.Types.ObjectId], ref: Permissions.name })
   permissions: Permissions[];
   @Prop()
   createdAt: Date;

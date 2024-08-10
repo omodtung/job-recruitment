@@ -31,7 +31,7 @@ export class CreateUserDto {
   @IsNotEmpty({ message: 'role Ko Duoc De Trong ' })
   @IsMongoId({message : 'co dinh dang la mongo id'})
   role:  mongoose.Schema.Types.ObjectId;
-  @IsNotEmpty({ message: 'refresh Token Ko Duoc De Trong ' })
+  // @IsNotEmpty({ message: 'refresh Token Ko Duoc De Trong ' })
   refreshToken: string;
 
   @IsNotEmpty()

@@ -56,7 +56,7 @@ export class UsersController {
   }
 
   @Get()
-  @ResponseMessage('Fetch List User with paginate')
+  @ResponseMessage('Fetch List User with paginate----')
   async findAll(
     @Query('current') currentPage: string,
     @Query('pageSize') limit: string,
