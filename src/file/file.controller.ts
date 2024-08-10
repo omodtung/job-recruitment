@@ -16,7 +16,7 @@ import { CreateFileDto } from './dto/create-file.dto';
 import { UpdateFileDto } from './dto/update-file.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Public } from '@/decorator/customize';
-@Controller('file')
+@Controller('files')
 export class FileController {
   constructor(private readonly fileService: FileService) {}
 
@@ -42,7 +42,7 @@ export class FileController {
       fileName: file.filename,
     };
   }
-@Public()
+  @Public()
   @Get()
   findAll() {
     return this.fileService.findAll();
