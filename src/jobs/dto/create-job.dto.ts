@@ -23,7 +23,7 @@ export class CreateJobDto {
 
   @IsArray({ message: 'Skill co dinh dang array' })
   @IsNotEmpty({ message: 'skill khong duoc de trong' })
-  @IsString({ each: true, message: 'Skill phai la stringu' })
+  @IsString({ each: true, message: 'Skill phai la string' })
   skill: string[];
   @IsNotEmpty({ message: 'salary không được để trống' })
   salary: number;
@@ -32,8 +32,8 @@ export class CreateJobDto {
 
   @IsNotEmpty({ message: 'level khong duoc de trongi' })
   level: string;
-  
-  @IsEmail({}, { message: 'discription  không đúng định dạng' })
+
+  // @IsEmail( { message: 'discription  không đúng định dạng' })
   @IsNotEmpty({ message: 'discription không được để trống' })
   description: string;
 
@@ -47,8 +47,8 @@ export class CreateJobDto {
   @IsDate({ message: 'endDate co Dinh dang Date' })
   endDate: Date;
 
-  @IsNotEmpty({ message: 'refresh Token Ko Duoc De Trong ' })
-  refreshToken: string;
+  // @IsNotEmpty({ message: 'refresh Token Ko Duoc De Trong ' })
+  // refreshToken: string;
   @IsNotEmpty({ message: ' IsActive khong duoc de trong ' })
   @IsBoolean({ message: ' IsActive co dinh dang la boolean' })
   isActive: Boolean;
@@ -59,6 +59,5 @@ export class CreateJobDto {
   @Type(() => Company)
   company: Company;
 
-
-  location : string
+  location: string;
 }

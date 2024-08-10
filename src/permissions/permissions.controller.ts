@@ -34,6 +34,7 @@ export class PermissionsController {
 
 
   @Get(':id')
+  @UseGuards(JwtAuthGuard)
   findOne(@Param('id') id: string) {
     return this.permissionsService.findOne(id);
   }
@@ -50,12 +51,14 @@ export class PermissionsController {
   }
 
   @Delete(':id')
+  @UseGuards(JwtAuthGuard)
   remove(@Param('id') id: string, @User() user: IUser) {
     return this.permissionsService.remove(id, user);
   }
 
   @Get()
   @Public()
+  @UseGuards(JwtAuthGuard)
   @ResponseMessage('Fetch List jobs with Paginate')
   findAll(
     @Query('current') currentPage: string,
